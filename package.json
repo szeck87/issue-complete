@@ -1,0 +1,30 @@
+{
+  "name": "issue-complete",
+  "version": "0.0.1",
+  "description": "A GitHub app that labels and comments on new issues that don't have a completed task list",
+  "author": "Steven Zeck <steven.zeck@gmail.com>",
+  "license": "ISC",
+  "repository": "https://github.com/szeck87/issue-complete.git",
+  "scripts": {
+    "start": "probot run ./index.js",
+    "test": "jest && standard"
+  },
+  "dependencies": {
+    "probot": "^6.0.0",
+    "probot-config": "^0.1.0"
+  },
+  "devDependencies": {
+    "jest": "^21.2.1",
+    "smee-client": "^1.0.1",
+    "standard": "^10.0.3"
+  },
+  "engines": {
+    "node": ">= 7.7.0",
+    "npm": ">= 4.0.0"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  }
+}
