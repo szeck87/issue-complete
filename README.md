@@ -7,6 +7,7 @@
 1. Install the [GitHub app](https://github.com/apps/issue-complete)
 2. Create a `.github/issuecomplete.yml` file in your repository (see [issuecomplete.yml](issuecomplete.yml) for a template)
 * labelName: The name of the label to apply when an issue does not have all tasks checked
+* labelColor: The color of the label (will be ignored if the label already exists)
 * commentText: The text of the comment to add to the issue in addition to the label
 
 ```yaml
