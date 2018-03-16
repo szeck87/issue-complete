@@ -12,7 +12,9 @@ module.exports = (robot) => {
     const hasUncheckedItems = /-\s\[\s\]/g.test(body)
     if (hasUncheckedItems) {
       addLabelToIssue(context, config)
-      addCommentToIssue(context, config)
+      if (context.payload.action !== 'edited') {
+        addCommentToIssue(context, config)
+      }
     } else {
       removeLabelFromIssue(context, config)
     }

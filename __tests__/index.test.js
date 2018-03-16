@@ -5,6 +5,7 @@ const issueOpened = require('./fixtures/issueOpened')
 const issueReopened = require('./fixtures/issueReopened')
 const issueWithChecked = require('./fixtures/issueWithCheckboxesChecked')
 const issueUpdatedWithChecked = require('./fixtures/issueUpdatedWithCheckboxes')
+const issueUpdatedWithoutChecked = require('./fixtures/issueUpdatedWithoutCheckboxes')
 
 let robot
 // let issue
@@ -85,6 +86,17 @@ test('removes label to updated issue with checkboxes filled', async () => {
     name: 'waiting-for-user-information'
   })
   expect(github.issues.addLabels).not.toHaveBeenCalled()
+  expect(github.issues.createComment).not.toHaveBeenCalled()
+})
+
+test('does not comment on updated issue with no checkboxes filled', async () => {
+  await robot.receive(issueUpdatedWithoutChecked)
+  expect(github.repos.getContent).toHaveBeenCalledWith({
+    owner: 'szeck87',
+    repo: 'bot-testing',
+    path: '.github/issuecomplete.yml'
+  })
+  expect(github.issues.addLabels).toHaveBeenCalled()
   expect(github.issues.createComment).not.toHaveBeenCalled()
 })
 
