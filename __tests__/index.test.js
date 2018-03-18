@@ -99,12 +99,3 @@ test('does not comment on updated issue with no checkboxes filled', async () => 
   expect(github.issues.addLabels).toHaveBeenCalled()
   expect(github.issues.createComment).not.toHaveBeenCalled()
 })
-
-// test('errors when there is no config file', async () => {
-//   await robot.receive(issueOpened)
-//   expect(github.repos.getContent).toHaveBeenCalledWith({
-//     owner: 'szeck87',
-//     repo: 'bot-testing',
-//     path: '.github/issuecomplete.yml'
-//   })
-// })
