@@ -7,9 +7,7 @@ const defaultConfig = {
 module.exports = (robot) => {
   robot.on(['issues.opened', 'issues.edited', 'issues.reopened'], async context => {
     const config = await context.config('issuecomplete.yml', defaultConfig)
-    if (!config) {
-      context.warn('No config found, please add an file at .github/issuecomplete.yml')
-    }
+    validateConfig(context, config)
     const body = context.payload.issue.body
     context.log('Checking to ensure all items are checked', body)
     const hasUncheckedItems = /-\s\[\s\]/g.test(body)
@@ -22,6 +20,18 @@ module.exports = (robot) => {
       removeLabelFromIssue(context, config)
     }
   })
+
+  function validateConfig (context, config) {
+    const validColor = /^[0-9A-F]{6}$/i.test(config.labelColor)
+    if (!validColor) {
+      context.log.error('Invalid color in config file, using default')
+      config.labelColor = defaultConfig.labelColor
+    }
+    if (config.labelName.length > 50) {
+      context.log.error('Too many characters for label name in config file, using default')
+      config.labelName = defaultConfig.labelName
+    }
+  }
 
   async function createLabelIfNotExists (context, labelName, labelColor) {
     const {owner, repo} = context.repo()
