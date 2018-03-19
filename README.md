@@ -6,9 +6,12 @@
 
 1. Install the [GitHub app](https://github.com/apps/issue-complete)
 2. Create a `.github/issuecomplete.yml` file in your repository (see [issuecomplete.yml](issuecomplete.yml) for a template)
-* labelName: The name of the label to apply when an issue does not have all tasks checked
-* labelColor: The color of the label (will be ignored if the label already exists)
-* commentText: The text of the comment to add to the issue in addition to the label
+
+| Name | Validation | Description | Default |
+| --- | --- | --- | --- |
+| labelName | String, 50 characters or less | The name of the label to apply when an issue does not have all tasks checked | waiting-for-user-information |
+| labelColor | Color in hex without `#` | The color of the label (will be ignored if the label already exists) | ffffff |
+| commentText | String | The text of the comment to add to the issue in addition to the label | Thanks for opening an issue on bot-testing. I see you haven\'t provided all of the information in the list. Please update the issue to include more information |
 
 ```yaml
 # The name of the label to apply when an issue does not have all tasks checked
