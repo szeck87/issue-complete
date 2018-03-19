@@ -1,7 +1,7 @@
 const defaultConfig = {
   labelName: 'waiting-for-user-information',
   labelColor: 'ffffff',
-  commentText: 'Thanks for opening an issue on bot-testing. I see you haven\'t provided all of the information in the list. Please update the issue to include more information.'
+  commentText: 'Thanks for opening an issue. I see you haven\'t provided all of the information in the list. Please update the issue to include more information.'
 }
 
 module.exports = (robot) => {
