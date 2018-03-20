@@ -52,7 +52,12 @@
       "updated_at": "2018-03-16T18:45:28Z",
       "closed_at": null,
       "author_association": "OWNER",
-      "body": "- [ ] Task 1\r\n- [ ] Task 2\r\n- [ ] Task 3\r\n"
+      "body": "- [X] Task 1\r\n- [X] Task 2\r\n- [X] Task 3\r\ngist\nrecreate"
+    },
+    "changes": {
+      "body": {
+        "from": "- [ ] Task 1\r\n- [ ] Task 2\r\n- [ ] Task 3\r\n"
+      }
     },
     "repository": {
       "id": 125294137,

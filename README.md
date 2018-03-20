@@ -12,6 +12,7 @@
 | labelName | String, 50 characters or less | The name of the label to apply when an issue does not have all tasks checked | waiting-for-user-information |
 | labelColor | Color in hex without `#` | The color of the label (will be ignored if the label already exists) | ffffff |
 | commentText | String | The text of the comment to add to the issue in addition to the label | Thanks for opening an issue. I see you haven't provided all of the information in the list. Please update the issue to include more information |
+| keywords | List (yaml format) | A list of keywords that each issue should have (example: a link to a gist, so "gist") | None |
 
 ```yaml
 # The name of the label to apply when an issue does not have all tasks checked
@@ -25,6 +26,10 @@ commentText: >
   Text here.
   More text here.
   And more text here.
+
+keywords:
+  - gist
+  - recreate
 ```
 
 ## Deploy

@@ -8,10 +8,8 @@ module.exports = (robot) => {
   robot.on(['issues.opened', 'issues.edited', 'issues.reopened'], async context => {
     const config = await context.config('issuecomplete.yml', defaultConfig)
     validateConfig(context, config)
-    const body = context.payload.issue.body
-    context.log('Checking to ensure all items are checked', body)
-    const hasUncheckedItems = /-\s\[\s\]/g.test(body)
-    if (hasUncheckedItems) {
+    const issueIsIncomplete = validateIssueRequirements(context, config)
+    if (issueIsIncomplete) {
       addLabelToIssue(context, config)
       if (context.payload.action !== 'edited') {
         addCommentToIssue(context, config)
@@ -33,11 +31,28 @@ module.exports = (robot) => {
     }
   }
 
+  function validateIssueRequirements (context, config) {
+    const body = context.payload.issue.body
+    const hasUncheckedTasks = /-\s\[\s\]/g.test(body)
+    let hasMissingKeywords = false
+    if (config.keywords) {
+      for (let i = 0; i < config.keywords.length; i++) {
+        if (body.indexOf(config.keywords[i]) === -1) {
+          hasMissingKeywords = true
+          break
+        }
+      }
+    }
+    if (hasUncheckedTasks || hasMissingKeywords) {
+      context.log('Issue is incomplete, missing checkboxes or keywords', {'Keywords': config.keywords, 'Issue Body': body})
+      return true
+    }
+    return false
+  }
+
   async function createLabelIfNotExists (context, labelName, labelColor) {
     const {owner, repo} = context.repo()
-    context.log('Checking to see if the label exists', {'Repo': repo, 'Label': labelName})
     return context.github.issues.getLabel({owner, repo, name: labelName}).catch(() => {
-      context.log('Creating label in repository', {'Label': labelName, 'Color': labelColor})
       return context.github.issues.createLabel({owner, repo, name: labelName, color: labelColor})
     })
   }
@@ -45,20 +60,17 @@ module.exports = (robot) => {
   async function addLabelToIssue (context, config) {
     const issueLabel = context.issue({labels: [config.labelName]})
     await createLabelIfNotExists(context, config.labelName, config.labelColor)
-    context.log('Adding label to issue', issueLabel)
     return context.github.issues.addLabels(issueLabel)
   }
 
   async function removeLabelFromIssue (context, config) {
     const labelName = config.labelName
     const labelRemoval = context.issue({name: labelName})
-    context.log('Removing label from issue', labelRemoval)
     return context.github.issues.removeLabel(labelRemoval)
   }
 
   async function addCommentToIssue (context, config) {
     const commentText = context.issue({body: config.commentText})
-    context.log('Adding comment to issue', commentText)
     return context.github.issues.createComment(commentText)
   }
 }
