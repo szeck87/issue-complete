@@ -5,7 +5,7 @@
 ## Setup
 
 1. Install the [GitHub app](https://github.com/apps/issue-complete)
-2. Create a `.github/issuecomplete.yml` file in your repository (see [issuecomplete.yml](issuecomplete.yml) for a template)
+2. Create a `.github/issuecomplete.yml` file in your repository (see [issuecomplete.yml](issuecomplete.yml) for a template). If you don't create this, the app will use defaults.
 
 | Name | Validation | Description | Default |
 | --- | --- | --- | --- |
