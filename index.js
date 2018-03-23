@@ -1,3 +1,5 @@
+const getConfig = require('probot-config')
+
 const defaultConfig = {
   labelName: 'waiting-for-user-information',
   labelColor: 'ffffff',
@@ -6,7 +8,7 @@ const defaultConfig = {
 
 module.exports = (robot) => {
   robot.on(['issues.opened', 'issues.edited', 'issues.reopened'], async context => {
-    const config = await context.config('issuecomplete.yml', defaultConfig)
+    const config = await getConfig(context, 'issuecomplete.yml', defaultConfig)
     validateConfig(context, config)
     const issueIsIncomplete = validateIssueRequirements(context, config)
     if (issueIsIncomplete) {
