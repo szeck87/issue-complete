@@ -1,6 +1,6 @@
 {
   "name": "issue-complete",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "description": "A GitHub app that labels and comments on new issues that don't have a completed task list",
   "author": "Steven Zeck <steven.zeck@gmail.com>",
   "license": "ISC",
