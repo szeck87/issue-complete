@@ -99,7 +99,6 @@ describe('issues are complete', () => {
     expect(github.issues.removeLabel).toHaveBeenCalledWith({
       owner: 'szeck87',
       repo: 'bot-testing',
-      number: 26,
       name: 'waiting-for-user-information'
     })
     expect(github.issues.addLabels).not.toHaveBeenCalled()
