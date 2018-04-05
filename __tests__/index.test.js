@@ -17,7 +17,7 @@ beforeEach(() => {
   github = {
     repos: {
       getContent: jest.fn().mockImplementation(() => Promise.resolve({
-        data: {content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.\nkeywords:\n  - gist\n  - recreate`).toString('base64')}
+        data: {content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate`).toString('base64')}
       }))
     },
     issues: {

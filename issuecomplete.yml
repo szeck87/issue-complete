@@ -10,6 +10,10 @@ commentText: >
   More text here.
   And more text here.
 
+# Whether or not to ensure all checkboxes are checked
+checkCheckboxes: true
+
+# Keywords to look for in the body of the issue
 keywords:
   - gist
   - recreate
