@@ -2,7 +2,7 @@
 import { Context } from 'probot'
 const getConfig = require('probot-config')
 
-const defaultConfig = {
+const defaultConfig: IssueCompleteConfig = {
   labelName: 'waiting-for-user-information',
   labelColor: 'ffffff',
   commentText: 'Thanks for opening an issue. I see you haven"t provided all of the information in the list. Please update the issue to include more information.'
@@ -24,4 +24,10 @@ function buildConfig (context: Context, config: any) {
     config.labelName = defaultConfig.labelName
   }
   return config
+}
+
+export interface IssueCompleteConfig {
+  labelName: string;
+  labelColor: string;
+  commentText: string;
 }

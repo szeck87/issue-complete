@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { Application, Context } from 'probot'
-import getValidConfig from './ConfigBuilder'
+// eslint-disable-next-line no-unused-vars
+import getValidConfig, { IssueCompleteConfig } from './ConfigBuilder'
 import isBodyValid from './IssueBodyChecker'
 
 export = (app: Application) => {
@@ -26,19 +27,19 @@ export = (app: Application) => {
     })
   }
 
-  async function addLabelToIssue (context: Context, config: any) {
+  async function addLabelToIssue (context: Context, config: IssueCompleteConfig) {
     const issueLabel = context.issue({ labels: [config.labelName] })
     await createLabelIfNotExists(context, config.labelName, config.labelColor)
     return context.github.issues.addLabels(issueLabel)
   }
 
-  async function removeLabelFromIssue (context: Context, config: any) {
+  async function removeLabelFromIssue (context: Context, config: IssueCompleteConfig) {
     const labelName = config.labelName
     const labelRemoval = context.issue({ name: labelName })
     return context.github.issues.removeLabel(labelRemoval)
   }
 
-  async function addCommentToIssue (context: Context, config: any) {
+  async function addCommentToIssue (context: Context, config: IssueCompleteConfig) {
     const commentText = context.issue({ body: config.commentText })
     return context.github.issues.createComment(commentText)
   }
