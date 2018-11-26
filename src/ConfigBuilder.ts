@@ -1,12 +1,19 @@
+// eslint-disable-next-line no-unused-vars
+import { Context } from 'probot'
 const getConfig = require('probot-config')
 
 const defaultConfig = {
   labelName: 'waiting-for-user-information',
   labelColor: 'ffffff',
-  commentText: 'Thanks for opening an issue. I see you haven\'t provided all of the information in the list. Please update the issue to include more information.'
+  commentText: 'Thanks for opening an issue. I see you haven"t provided all of the information in the list. Please update the issue to include more information.'
 }
 
-function buildConfig (context, config) {
+export default async function getValidConfig (context: Context) {
+  const repoConfig = await getConfig(context, 'issuecomplete.yml', defaultConfig)
+  return buildConfig(context, repoConfig)
+}
+
+function buildConfig (context: Context, config: any) {
   const validColor = /^[0-9A-F]{6}$/i.test(config.labelColor)
   if (!validColor) {
     context.log.error('Invalid color in config file, using default')
@@ -18,12 +25,3 @@ function buildConfig (context, config) {
   }
   return config
 }
-
-class ConfigBuilder {
-  static async getValidConfig (context) {
-    const repoConfig = await getConfig(context, 'issuecomplete.yml', defaultConfig)
-    return buildConfig(context, repoConfig)
-  }
-}
-
-module.exports = ConfigBuilder
