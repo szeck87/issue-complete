@@ -1,31 +1,28 @@
 {
-  "event": "issues",
-  "payload": {
-    "action": "reopened",
-    "issue": {
-      "title": "Test With No Checkboxes Filled",
-      "user": {
-        "login": "szeck87"
-      },
-      "labels": [
-        {
-          "id": 868485507,
-          "url": "https://api.github.com/repos/szeck87/bot-testing/labels/waiting-for-user-information",
-          "name": "waiting-for-user-information",
-          "color": "f7c6c7",
-          "default": false
-        }
-      ],
-      "body": "- [ ] Task 1\r\n- [X] Task 2\r\n- [X] task 3\r\n"
+  "action": "reopened",
+  "issue": {
+    "title": "Test With No Checkboxes Filled",
+    "user": {
+      "login": "szeck87"
     },
-    "repository": {
-      "name": "bot-testing",
-      "owner": {
-        "login": "szeck87"
+    "labels": [
+      {
+        "id": 868485507,
+        "url": "https://api.github.com/repos/szeck87/bot-testing/labels/waiting-for-user-information",
+        "name": "waiting-for-user-information",
+        "color": "f7c6c7",
+        "default": false
       }
-    },
-    "installation": {
-      "id": 112527
+    ],
+    "body": "- [ ] Task 1\r\n- [X] Task 2\r\n- [X] task 3\r\n"
+  },
+  "repository": {
+    "name": "bot-testing",
+    "owner": {
+      "login": "szeck87"
     }
+  },
+  "installation": {
+    "id": 112527
   }
 }

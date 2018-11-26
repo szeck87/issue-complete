@@ -1,6 +1,6 @@
 // Requiring probot allows us to mock out a robot instance
-const {createRobot} = require('probot')
-const app = require('../index.js')
+const { Application } = require('probot')
+const issueCompleteApp = require('../index.js')
 const issueOpenedWithUnchecked = require('./fixtures/issueOpenedWithUnchecked')
 const issueOpenedMissingKeywords = require('./fixtures/issueOpenedMissingKeywords')
 const issueReopenedIncomplete = require('./fixtures/issueReopenedIncomplete')
@@ -8,16 +8,16 @@ const issueOpenedComplete = require('./fixtures/issueOpenedComplete')
 const issueUpdatedComplete = require('./fixtures/issueUpdatedComplete')
 const issueUpdatedIncomplete = require('./fixtures/issueUpdatedIncomplete')
 
-let robot
+let app
 let github
 
 beforeEach(() => {
-  robot = createRobot()
-  app(robot)
+  app = new Application()
+  app.load(issueCompleteApp)
   github = {
     repos: {
       getContent: jest.fn().mockImplementation(() => Promise.resolve({
-        data: {content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate`).toString('base64')}
+        data: { content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate`).toString('base64') }
       }))
     },
     issues: {
@@ -28,12 +28,15 @@ beforeEach(() => {
       getLabel: jest.fn().mockImplementation(() => Promise.reject(new Error()))
     }
   }
-  robot.auth = () => Promise.resolve(github)
+  app.auth = () => Promise.resolve(github)
 })
 
 describe('issues are incomplete', () => {
   test('unchecked boxes, adds a label and comment to a newly opened issue', async () => {
-    await robot.receive(issueOpenedWithUnchecked)
+    await app.receive({
+      name: 'issues',
+      payload: issueOpenedWithUnchecked
+    })
     expect(github.repos.getContent).toHaveBeenCalledWith({
       owner: 'szeck87',
       repo: 'bot-testing',
@@ -44,7 +47,10 @@ describe('issues are incomplete', () => {
   })
 
   test('missing keywords, adds a label and comment to a newly opened issue', async () => {
-    await robot.receive(issueOpenedMissingKeywords)
+    await app.receive({
+      name: 'issues',
+      payload: issueOpenedMissingKeywords
+    })
     expect(github.repos.getContent).toHaveBeenCalledWith({
       owner: 'szeck87',
       repo: 'bot-testing',
@@ -55,7 +61,10 @@ describe('issues are incomplete', () => {
   })
 
   test('unchecked boxes and missing keywords, adds a label and comment to a reopened issue', async () => {
-    await robot.receive(issueReopenedIncomplete)
+    await app.receive({
+      name: 'issues',
+      payload: issueReopenedIncomplete
+    })
     expect(github.repos.getContent).toHaveBeenCalledWith({
       owner: 'szeck87',
       repo: 'bot-testing',
@@ -66,7 +75,10 @@ describe('issues are incomplete', () => {
   })
 
   test('does not comment on updated issue with no checkboxes filled', async () => {
-    await robot.receive(issueUpdatedIncomplete)
+    await app.receive({
+      name: 'issues',
+      payload: issueUpdatedIncomplete
+    })
     expect(github.repos.getContent).toHaveBeenCalledWith({
       owner: 'szeck87',
       repo: 'bot-testing',
@@ -79,7 +91,10 @@ describe('issues are incomplete', () => {
 
 describe('issues are complete', () => {
   test('boxes checked and has keywords, does not add label or comment to opened issue', async () => {
-    await robot.receive(issueOpenedComplete)
+    await app.receive({
+      name: 'issues',
+      payload: issueOpenedComplete
+    })
     expect(github.repos.getContent).toHaveBeenCalledWith({
       owner: 'szeck87',
       repo: 'bot-testing',
@@ -90,7 +105,10 @@ describe('issues are complete', () => {
   })
 
   test('boxes checked and has keywords, removes label to updated issue', async () => {
-    await robot.receive(issueUpdatedComplete)
+    await app.receive({
+      name: 'issues',
+      payload: issueUpdatedComplete
+    })
     expect(github.repos.getContent).toHaveBeenCalledWith({
       owner: 'szeck87',
       repo: 'bot-testing',

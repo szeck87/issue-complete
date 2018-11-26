@@ -1,22 +1,19 @@
 {
-  "event": "issues",
-  "payload": {
-    "action": "opened",
-    "issue": {
-      "title": "Test With Checkboxes Filled",
-      "user": {
-        "login": "szeck87"
-      },
-      "body": "- [X] Task 1\r\n- [X] Task 2\r\n- [X] Task 3\r\nrecreate"
+  "action": "opened",
+  "issue": {
+    "title": "Test With Checkboxes Filled",
+    "user": {
+      "login": "szeck87"
     },
-    "repository": {
-      "name": "bot-testing",
-      "owner": {
-        "login": "szeck87"
-      }
-    },
-    "installation": {
-      "id": 112527
+    "body": "- [X] Task 1\r\n- [X] Task 2\r\n- [X] Task 3\r\nrecreate"
+  },
+  "repository": {
+    "name": "bot-testing",
+    "owner": {
+      "login": "szeck87"
     }
+  },
+  "installation": {
+    "id": 112527
   }
 }

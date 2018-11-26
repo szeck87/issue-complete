@@ -16,26 +16,26 @@ module.exports = (robot) => {
   })
 
   async function createLabelIfNotExists (context, labelName, labelColor) {
-    const {owner, repo} = context.repo()
-    return context.github.issues.getLabel({owner, repo, name: labelName}).catch(() => {
-      return context.github.issues.createLabel({owner, repo, name: labelName, color: labelColor})
+    const { owner, repo } = context.repo()
+    return context.github.issues.getLabel({ owner, repo, name: labelName }).catch(() => {
+      return context.github.issues.createLabel({ owner, repo, name: labelName, color: labelColor })
     })
   }
 
   async function addLabelToIssue (context, config) {
-    const issueLabel = context.issue({labels: [config.labelName]})
+    const issueLabel = context.issue({ labels: [config.labelName] })
     await createLabelIfNotExists(context, config.labelName, config.labelColor)
     return context.github.issues.addLabels(issueLabel)
   }
 
   async function removeLabelFromIssue (context, config) {
     const labelName = config.labelName
-    const labelRemoval = context.issue({name: labelName})
+    const labelRemoval = context.issue({ name: labelName })
     return context.github.issues.removeLabel(labelRemoval)
   }
 
   async function addCommentToIssue (context, config) {
-    const commentText = context.issue({body: config.commentText})
+    const commentText = context.issue({ body: config.commentText })
     return context.github.issues.createComment(commentText)
   }
 }
