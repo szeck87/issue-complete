@@ -1,6 +1,18 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=1ec4afece86cc50d58d346f27fd183a98aca0dccc14626628d7ede1af649c557
 sudo: false
 language: node_js
 node_js:
-  - "7.7.1"
+  - "8.3"
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
+  - chmod +x ./cc-test-reporter;
+  - ./cc-test-reporter before-build;
+script:
+  - npm run lint
+  - npm test
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT;
 notifications:
   disabled: true
