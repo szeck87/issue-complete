@@ -1,7 +1,12 @@
-'use strict'
+'use strict';
 
 module.exports = {
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  collectCoverage: true,
-  coverageReporters: ['json', 'lcov', 'text', 'html']
-}
+    roots: ['<rootDir>/src/', '<rootDir>/test/'],
+    transform: {
+      '^.+\\.tsx?$': 'ts-jest'
+    },
+    testRegex: '(/__tests__/.*|\\.(test|spec))\\.[tj]sx?$',
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    collectCoverage: true,
+    coverageReporters: ['json', 'lcov', 'text', 'html']
+  }

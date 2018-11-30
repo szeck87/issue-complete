@@ -1,6 +1,6 @@
 // Requiring probot allows us to mock out a robot instance
-const { Application } = require('probot')
-const issueCompleteApp = require('../index.js')
+import { Application } from 'probot'
+import issueComplete from '../src'
 const issueOpenedWithUnchecked = require('./fixtures/issueOpenedWithUnchecked')
 const issueOpenedMissingKeywords = require('./fixtures/issueOpenedMissingKeywords')
 const issueReopenedIncomplete = require('./fixtures/issueReopenedIncomplete')
@@ -8,12 +8,12 @@ const issueOpenedComplete = require('./fixtures/issueOpenedComplete')
 const issueUpdatedComplete = require('./fixtures/issueUpdatedComplete')
 const issueUpdatedIncomplete = require('./fixtures/issueUpdatedIncomplete')
 
-let app
-let github
+let app: Application
+let github: any
 
 beforeEach(() => {
   app = new Application()
-  app.load(issueCompleteApp)
+  app.load(issueComplete)
   github = {
     repos: {
       getContent: jest.fn().mockImplementation(() => Promise.resolve({
