@@ -7,6 +7,7 @@ const issueReopenedIncomplete = require('./fixtures/issueReopenedIncomplete')
 const issueOpenedComplete = require('./fixtures/issueOpenedComplete')
 const issueUpdatedComplete = require('./fixtures/issueUpdatedComplete')
 const issueUpdatedIncomplete = require('./fixtures/issueUpdatedIncomplete')
+const issueOpenedNoBody = require('./fixtures/issueOpenedNoBody')
 
 let app: Application
 let github: any
@@ -87,10 +88,41 @@ describe('issues are incomplete', () => {
     expect(github.issues.addLabels).toHaveBeenCalled()
     expect(github.issues.createComment).not.toHaveBeenCalled()
   })
+
+  test('body is empty, adds a comment and labels', async () => {
+    await app.receive({
+      name: 'issues',
+      payload: issueOpenedNoBody
+    })
+    expect(github.repos.getContent).toHaveBeenCalledWith({
+      owner: 'szeck87',
+      repo: 'bot-testing',
+      path: '.github/issuecomplete.yml'
+    })
+    expect(github.issues.addLabels).toHaveBeenCalled()
+    expect(github.issues.createComment).toHaveBeenCalled()
+  })
 })
 
 describe('issues are complete', () => {
   test('boxes checked and has keywords, does not add label or comment to opened issue', async () => {
+    await app.receive({
+      name: 'issues',
+      payload: issueOpenedComplete
+    })
+    expect(github.repos.getContent).toHaveBeenCalledWith({
+      owner: 'szeck87',
+      repo: 'bot-testing',
+      path: '.github/issuecomplete.yml'
+    })
+    expect(github.issues.addLabels).not.toHaveBeenCalled()
+    expect(github.issues.createComment).not.toHaveBeenCalled()
+  })
+
+  test('does not check checkboxes or keywords, does nothing', async () => {
+    github.repos.getContent = jest.fn().mockImplementation(() => Promise.resolve({
+      data: { content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.`).toString('base64') }
+    }))
     await app.receive({
       name: 'issues',
       payload: issueOpenedComplete
@@ -118,6 +150,40 @@ describe('issues are complete', () => {
       owner: 'szeck87',
       repo: 'bot-testing',
       name: 'waiting-for-user-information'
+    })
+    expect(github.issues.addLabels).not.toHaveBeenCalled()
+    expect(github.issues.createComment).not.toHaveBeenCalled()
+  })
+
+  test('invalid color, uses default #ffffff', async () => {
+    github.repos.getContent = jest.fn().mockImplementation(() => Promise.resolve({
+      data: { content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: hjuhgg\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate`).toString('base64') }
+    }))
+    await app.receive({
+      name: 'issues',
+      payload: issueOpenedComplete
+    })
+    expect(github.repos.getContent).toHaveBeenCalledWith({
+      owner: 'szeck87',
+      repo: 'bot-testing',
+      path: '.github/issuecomplete.yml'
+    })
+    expect(github.issues.addLabels).not.toHaveBeenCalled()
+    expect(github.issues.createComment).not.toHaveBeenCalled()
+  })
+
+  test('label text length too long, uses default', async () => {
+    github.repos.getContent = jest.fn().mockImplementation(() => Promise.resolve({
+      data: { content: Buffer.from(`labelName: waiting-for-user-information-and-more-user-information\nlabelColor: ffffff\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate`).toString('base64') }
+    }))
+    await app.receive({
+      name: 'issues',
+      payload: issueOpenedComplete
+    })
+    expect(github.repos.getContent).toHaveBeenCalledWith({
+      owner: 'szeck87',
+      repo: 'bot-testing',
+      path: '.github/issuecomplete.yml'
     })
     expect(github.issues.addLabels).not.toHaveBeenCalled()
     expect(github.issues.createComment).not.toHaveBeenCalled()

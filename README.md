@@ -2,6 +2,8 @@
 
 > a GitHub App built with [probot](https://github.com/probot/probot) that ensures task lists in your issue template are completed when an issue is submitted.
 
+[![Build Status](https://travis-ci.com/stevenzeck/issue-complete.svg?branch=master)](https://travis-ci.com/stevenzeck/issue-complete) [![Maintainability](https://api.codeclimate.com/v1/badges/200de1d512b9aec78a17/maintainability)](https://codeclimate.com/github/stevenzeck/issue-complete/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/200de1d512b9aec78a17/test_coverage)](https://codeclimate.com/github/stevenzeck/issue-complete/test_coverage)
+
 ## What It Does
 
 issue-complete looks at the body of an issue and adds a label and comment if it has unchecked boxes in the tasklist and/or has missing keywords. In this example, Task 2 is not checked so the bot adds a label and comment to it:

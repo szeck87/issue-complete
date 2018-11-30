@@ -1,0 +1,18 @@
+{
+    "action": "opened",
+    "issue": {
+      "title": "Test With Checkboxes Filled",
+      "user": {
+        "login": "szeck87"
+      }
+    },
+    "repository": {
+      "name": "bot-testing",
+      "owner": {
+        "login": "szeck87"
+      }
+    },
+    "installation": {
+      "id": 112527
+    }
+  }
