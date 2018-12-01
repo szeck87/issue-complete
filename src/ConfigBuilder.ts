@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { Context } from 'probot'
-const getConfig = require('probot-config')
+import getConfig from 'probot-config'
 
 const defaultConfig: IssueCompleteConfig = {
   labelName: 'waiting-for-user-information',

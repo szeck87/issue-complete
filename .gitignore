@@ -3,7 +3,6 @@ npm-debug.log
 *.pem
 .env
 package-lock.json
-*.d.ts
 *.js.map
 dist
 coverage
