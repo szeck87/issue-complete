@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "probot": "7.5.0",
-    "probot-config": "1.0.0",
+    "probot-config": "1.0.1",
     "typescript": "3.2.2"
   },
   "devDependencies": {
