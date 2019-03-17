@@ -35,6 +35,7 @@ beforeEach(() => {
 describe('issues are incomplete', () => {
   test('unchecked boxes, adds a label and comment to a newly opened issue', async () => {
     await app.receive({
+      id: '123',
       name: 'issues',
       payload: issueOpenedWithUnchecked
     })
@@ -49,6 +50,7 @@ describe('issues are incomplete', () => {
 
   test('missing keywords, adds a label and comment to a newly opened issue', async () => {
     await app.receive({
+      id: '123',
       name: 'issues',
       payload: issueOpenedMissingKeywords
     })
@@ -63,6 +65,7 @@ describe('issues are incomplete', () => {
 
   test('unchecked boxes and missing keywords, adds a label and comment to a reopened issue', async () => {
     await app.receive({
+      id: '123',
       name: 'issues',
       payload: issueReopenedIncomplete
     })
@@ -77,6 +80,7 @@ describe('issues are incomplete', () => {
 
   test('does not comment on updated issue with no checkboxes filled', async () => {
     await app.receive({
+      id: '123',
       name: 'issues',
       payload: issueUpdatedIncomplete
     })
@@ -91,6 +95,7 @@ describe('issues are incomplete', () => {
 
   test('body is empty, adds a comment and labels', async () => {
     await app.receive({
+      id: '123',
       name: 'issues',
       payload: issueOpenedNoBody
     })
@@ -107,6 +112,7 @@ describe('issues are incomplete', () => {
 describe('issues are complete', () => {
   test('boxes checked and has keywords, does not add label or comment to opened issue', async () => {
     await app.receive({
+      id: '123',
       name: 'issues',
       payload: issueOpenedComplete
     })
@@ -124,6 +130,7 @@ describe('issues are complete', () => {
       data: { content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.`).toString('base64') }
     }))
     await app.receive({
+      id: '123',
       name: 'issues',
       payload: issueOpenedComplete
     })
@@ -138,6 +145,7 @@ describe('issues are complete', () => {
 
   test('boxes checked and has keywords, removes label to updated issue', async () => {
     await app.receive({
+      id: '123',
       name: 'issues',
       payload: issueUpdatedComplete
     })
@@ -160,6 +168,7 @@ describe('issues are complete', () => {
       data: { content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: hjuhgg\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate`).toString('base64') }
     }))
     await app.receive({
+      id: '123',
       name: 'issues',
       payload: issueOpenedComplete
     })
@@ -177,6 +186,7 @@ describe('issues are complete', () => {
       data: { content: Buffer.from(`labelName: waiting-for-user-information-and-more-user-information\nlabelColor: ffffff\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate`).toString('base64') }
     }))
     await app.receive({
+      id: '123',
       name: 'issues',
       payload: issueOpenedComplete
     })
