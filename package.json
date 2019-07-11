@@ -21,20 +21,20 @@
   },
   "devDependencies": {
     "@types/jest": "24.0.15",
-    "@types/node": "10.12.24",
+    "@types/node": "12.6.2",
+    "@typescript-eslint/parser": "^1.11.0",
     "eslint-plugin-typescript": "0.14.0",
     "jest": "24.8.0",
     "nodemon": "1.19.1",
     "smee-client": "1.1.0",
     "standard": "13.0.0",
-    "ts-jest": "24.0.2",
-    "typescript-eslint-parser": "21.0.2"
+    "ts-jest": "24.0.2"
   },
   "engines": {
     "node": ">= 8.3.0"
   },
   "standard": {
-    "parser": "typescript-eslint-parser",
+    "parser": "@typescript-eslint/parser",
     "env": [
       "jest"
     ],
