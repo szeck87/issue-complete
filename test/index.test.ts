@@ -18,7 +18,7 @@ beforeEach(() => {
   github = {
     repos: {
       getContents: jest.fn().mockImplementation(() => Promise.resolve({
-        data: { content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate`).toString('base64') }
+        data: { content: Buffer.from('labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate').toString('base64') }
       }))
     },
     issues: {
@@ -127,7 +127,7 @@ describe('issues are complete', () => {
 
   test('does not check checkboxes or keywords, does nothing', async () => {
     github.repos.getContents = jest.fn().mockImplementation(() => Promise.resolve({
-      data: { content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.`).toString('base64') }
+      data: { content: Buffer.from('labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.').toString('base64') }
     }))
     await app.receive({
       id: '123',
@@ -165,7 +165,7 @@ describe('issues are complete', () => {
 
   test('invalid color, uses default #ffffff', async () => {
     github.repos.getContents = jest.fn().mockImplementation(() => Promise.resolve({
-      data: { content: Buffer.from(`labelName: waiting-for-user-information\nlabelColor: hjuhgg\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate`).toString('base64') }
+      data: { content: Buffer.from('labelName: waiting-for-user-information\nlabelColor: hjuhgg\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate').toString('base64') }
     }))
     await app.receive({
       id: '123',
@@ -183,7 +183,7 @@ describe('issues are complete', () => {
 
   test('label text length too long, uses default', async () => {
     github.repos.getContents = jest.fn().mockImplementation(() => Promise.resolve({
-      data: { content: Buffer.from(`labelName: waiting-for-user-information-and-more-user-information\nlabelColor: ffffff\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate`).toString('base64') }
+      data: { content: Buffer.from('labelName: waiting-for-user-information-and-more-user-information\nlabelColor: ffffff\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate').toString('base64') }
     }))
     await app.receive({
       id: '123',
