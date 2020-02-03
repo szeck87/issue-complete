@@ -28,7 +28,7 @@
     "nodemon": "2.0.2",
     "smee-client": "1.1.0",
     "standard": "14.3.1",
-    "ts-jest": "25.1.0"
+    "ts-jest": "25.2.0"
   },
   "engines": {
     "node": ">= 8.3.0"
