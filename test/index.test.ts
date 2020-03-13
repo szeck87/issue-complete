@@ -1,6 +1,6 @@
 // Requiring probot allows us to mock out a robot instance
 import { Application } from 'probot'
-import issueComplete from '../src'
+import issueChecker from '../src'
 const issueOpenedWithUnchecked = require('./fixtures/issueOpenedWithUnchecked')
 const issueOpenedMissingKeywords = require('./fixtures/issueOpenedMissingKeywords')
 const issueReopenedIncomplete = require('./fixtures/issueReopenedIncomplete')
@@ -14,7 +14,7 @@ let github: any
 
 beforeEach(() => {
   app = new Application()
-  app.load(issueComplete)
+  app.load(issueChecker)
   github = {
     repos: {
       getContents: jest.fn().mockImplementation(() => Promise.resolve({
@@ -32,7 +32,7 @@ beforeEach(() => {
   app.auth = () => Promise.resolve(github)
 })
 
-describe('issues are incomplete', () => {
+describe('issues are missing required information', () => {
   test('unchecked boxes, adds a label and comment to a newly opened issue', async () => {
     await app.receive({
       id: '123',
@@ -40,7 +40,7 @@ describe('issues are incomplete', () => {
       payload: issueOpenedWithUnchecked
     })
     expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       path: '.github/issuecomplete.yml'
     })
@@ -55,7 +55,7 @@ describe('issues are incomplete', () => {
       payload: issueOpenedMissingKeywords
     })
     expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       path: '.github/issuecomplete.yml'
     })
@@ -70,7 +70,7 @@ describe('issues are incomplete', () => {
       payload: issueReopenedIncomplete
     })
     expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       path: '.github/issuecomplete.yml'
     })
@@ -85,7 +85,7 @@ describe('issues are incomplete', () => {
       payload: issueUpdatedIncomplete
     })
     expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       path: '.github/issuecomplete.yml'
     })
@@ -100,7 +100,7 @@ describe('issues are incomplete', () => {
       payload: issueOpenedNoBody
     })
     expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       path: '.github/issuecomplete.yml'
     })
@@ -109,7 +109,7 @@ describe('issues are incomplete', () => {
   })
 })
 
-describe('issues are complete', () => {
+describe('issues have required information', () => {
   test('boxes checked and has keywords, does not add label or comment to opened issue', async () => {
     await app.receive({
       id: '123',
@@ -117,7 +117,7 @@ describe('issues are complete', () => {
       payload: issueOpenedComplete
     })
     expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       path: '.github/issuecomplete.yml'
     })
@@ -135,7 +135,7 @@ describe('issues are complete', () => {
       payload: issueOpenedComplete
     })
     expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       path: '.github/issuecomplete.yml'
     })
@@ -150,12 +150,12 @@ describe('issues are complete', () => {
       payload: issueUpdatedComplete
     })
     expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       path: '.github/issuecomplete.yml'
     })
     expect(github.issues.removeLabel).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       name: 'waiting-for-user-information'
     })
@@ -173,7 +173,7 @@ describe('issues are complete', () => {
       payload: issueOpenedComplete
     })
     expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       path: '.github/issuecomplete.yml'
     })
@@ -191,11 +191,28 @@ describe('issues are complete', () => {
       payload: issueOpenedComplete
     })
     expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'szeck87',
+      owner: 'stevenzeck',
       repo: 'bot-testing',
       path: '.github/issuecomplete.yml'
     })
     expect(github.issues.addLabels).not.toHaveBeenCalled()
     expect(github.issues.createComment).not.toHaveBeenCalled()
+  })
+})
+
+describe('configuration file name', () => {
+  test('issuecomplete.yml still picks up the configuration', async () => {
+    await app.receive({
+      id: '123',
+      name: 'issues',
+      payload: issueOpenedWithUnchecked
+    })
+    expect(github.repos.getContents).toHaveBeenLastCalledWith({
+      owner: 'stevenzeck',
+      repo: 'bot-testing',
+      path: '.github/issuecomplete.yml'
+    })
+    expect(github.issues.addLabels).toHaveBeenCalled()
+    expect(github.issues.createComment).toHaveBeenCalled()
   })
 })

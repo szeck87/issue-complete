@@ -1,11 +1,11 @@
 // eslint-disable-next-line no-unused-vars
 import { Application, Context } from 'probot'
 // eslint-disable-next-line no-unused-vars
-import getValidConfig, { IssueCompleteConfig } from './ConfigBuilder'
-import isBodyValid from './IssueBodyChecker'
+import getValidConfig, { IssueCheckerConfig } from './config-builder'
+import isBodyValid from './issue-body-checker'
 
 export = (app: Application) => {
-  app.log('Issue Complete loaded')
+  app.log('Issue Checker loaded')
   app.on(['issues.opened', 'issues.edited', 'issues.reopened'], async (context: Context) => {
     const config = await getValidConfig(context)
     const body: string = context.payload.issue.body
@@ -27,19 +27,19 @@ export = (app: Application) => {
     })
   }
 
-  async function addLabelToIssue (context: Context, config: IssueCompleteConfig) {
+  async function addLabelToIssue (context: Context, config: IssueCheckerConfig) {
     const issueLabel = context.issue({ labels: [config.labelName] })
     await createLabelIfNotExists(context, config.labelName, config.labelColor)
     return context.github.issues.addLabels(issueLabel)
   }
 
-  async function removeLabelFromIssue (context: Context, config: IssueCompleteConfig) {
+  async function removeLabelFromIssue (context: Context, config: IssueCheckerConfig) {
     const labelName = config.labelName
     const labelRemoval = context.issue({ name: labelName })
     return context.github.issues.removeLabel(labelRemoval)
   }
 
-  async function addCommentToIssue (context: Context, config: IssueCompleteConfig) {
+  async function addCommentToIssue (context: Context, config: IssueCheckerConfig) {
     const commentText = context.issue({ body: config.commentText })
     return context.github.issues.createComment(commentText)
   }

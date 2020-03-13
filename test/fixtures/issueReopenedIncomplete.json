@@ -3,12 +3,12 @@
   "issue": {
     "title": "Test With No Checkboxes Filled",
     "user": {
-      "login": "szeck87"
+      "login": "stevenzeck"
     },
     "labels": [
       {
         "id": 868485507,
-        "url": "https://api.github.com/repos/szeck87/bot-testing/labels/waiting-for-user-information",
+        "url": "https://api.github.com/repos/stevenzeck/bot-testing/labels/waiting-for-user-information",
         "name": "waiting-for-user-information",
         "color": "f7c6c7",
         "default": false
@@ -19,7 +19,7 @@
   "repository": {
     "name": "bot-testing",
     "owner": {
-      "login": "szeck87"
+      "login": "stevenzeck"
     }
   },
   "installation": {

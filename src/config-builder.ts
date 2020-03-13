@@ -1,15 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 import { Context } from 'probot'
-import getConfig from 'probot-config'
 
-const defaultConfig: IssueCompleteConfig = {
+const defaultConfig: IssueCheckerConfig = {
   labelName: 'waiting-for-user-information',
   labelColor: 'ffffff',
   commentText: 'Thanks for opening an issue. I see you haven"t provided all of the information in the list. Please update the issue to include more information.'
 }
 
 export default async function getValidConfig (context: Context) {
-  const repoConfig = await getConfig(context, 'issuecomplete.yml', defaultConfig)
+  const repoConfig = await context.config('issuecomplete.yml', defaultConfig)
   return buildConfig(context, repoConfig)
 }
 
@@ -26,7 +25,7 @@ function buildConfig (context: Context, config: any) {
   return config
 }
 
-export interface IssueCompleteConfig {
+export interface IssueCheckerConfig {
   labelName: string;
   labelColor: string;
   commentText: string;

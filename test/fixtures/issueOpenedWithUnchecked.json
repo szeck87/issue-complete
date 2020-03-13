@@ -3,14 +3,14 @@
   "issue": {
     "title": "Test With No Checkboxes Filled",
     "user": {
-      "login": "szeck87"
+      "login": "stevenzeck"
     },
     "body": "- [ ] Task 1\r\n- [ ] Task 2\r\n- [ ] Task 3\r\ngist\nrecreate"
   },
   "repository": {
     "name": "bot-testing",
     "owner": {
-      "login": "szeck87"
+      "login": "stevenzeck"
     }
   },
   "installation": {
