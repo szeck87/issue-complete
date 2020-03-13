@@ -1,19 +1,19 @@
-# issue-checker
+# issue-check
 
 > a GitHub App built with [probot](https://github.com/probot/probot) that ensures task lists in your issue template are completed when an issue is submitted. It also scans for keywords, such as "recreate", that may be in your template but missing when an issue is created
 
-[![Build Status](https://travis-ci.com/stevenzeck/issue-checker.svg?branch=master)](https://travis-ci.com/stevenzeck/issue-checker) [![Maintainability](https://api.codeclimate.com/v1/badges/200de1d512b9aec78a17/maintainability)](https://codeclimate.com/github/stevenzeck/issue-checker/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/200de1d512b9aec78a17/test_coverage)](https://codeclimate.com/github/stevenzeck/issue-checker/test_coverage)
+[![Build Status](https://travis-ci.com/stevenzeck/issue-check.svg?branch=master)](https://travis-ci.com/stevenzeck/issue-check) [![Maintainability](https://api.codeclimate.com/v1/badges/200de1d512b9aec78a17/maintainability)](https://codeclimate.com/github/stevenzeck/issue-check/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/200de1d512b9aec78a17/test_coverage)](https://codeclimate.com/github/stevenzeck/issue-check/test_coverage)
 
 ## What It Does
 
-issue-checker looks at the body of an issue and adds a label and comment if it has unchecked boxes in the tasklist and/or has missing keywords. In this example, Task 2 is not checked so the bot adds a label and comment to it:
+issue-check looks at the body of an issue and adds a label and comment if it has unchecked boxes in the tasklist and/or has missing keywords. In this example, Task 2 is not checked so the bot adds a label and comment to it:
 
-![issuechecker](https://user-images.githubusercontent.com/8315038/76657935-f1f68a00-6540-11ea-9f38-57410f71a49a.png)
+![issuecheck](https://user-images.githubusercontent.com/8315038/76657935-f1f68a00-6540-11ea-9f38-57410f71a49a.png)
 
 ## Setup
 
-1. Install the [GitHub app](https://github.com/apps/issue-checker)
-2. Create a `.github/issuechecker.yml` or `.github/issuecomplete.yml` file in your repository (see [issuecomplete.yml](issuecomplete.yml) for a template). If you don't create this, the app will use defaults.
+1. Install the [GitHub app](https://github.com/apps/issue-check)
+2. Create a `.github/issuecheck.yml` or `.github/issuecomplete.yml` file in your repository (see [issuecomplete.yml](issuecomplete.yml) for a template). If you don't create this, the app will use defaults.
 
 | Name | Validation | Description | Default |
 | --- | --- | --- | --- |

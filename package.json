@@ -1,12 +1,12 @@
 {
-  "name": "issue-checker",
+  "name": "issue-check",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "version": "1.1.0",
   "description": "A GitHub app that labels and comments issues that are missing required information",
   "author": "Steven Zeck <steven.zeck@gmail.com>",
   "license": "ISC",
-  "repository": "https://github.com/stevenzeck/issue-checker.git",
+  "repository": "https://github.com/stevenzeck/issue-check.git",
   "scripts": {
     "build": "tsc",
     "prestart": "npm run build",
