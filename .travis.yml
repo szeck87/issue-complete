@@ -1,6 +1,6 @@
 env:
   global:
-    - CC_TEST_REPORTER_ID=1ec4afece86cc50d58d346f27fd183a98aca0dccc14626628d7ede1af649c557
+    - CC_TEST_REPORTER_ID=b16b0f5d15ecf1fc6201e25ec63bb5202e25ddf508417cb800109bb2c0908ed6
 sudo: false
 language: node_js
 node_js:
