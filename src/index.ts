@@ -22,25 +22,95 @@ export = (app: Application) => {
 
   async function createLabelIfNotExists (context: Context, labelName: string, labelColor: string) {
     const { owner, repo } = context.repo()
-    return context.github.issues.getLabel({ owner, repo, name: labelName }).catch(() => {
-      return context.github.issues.createLabel({ owner, repo, name: labelName, color: labelColor })
+    const labelId = await getLabelByName(context, labelName)
+    if (labelId !== null) {
+      return labelId
+    } else {
+      context.log('Creating label')
+      const createdLabel = await context.github.issues.createLabel({ owner, repo, name: labelName, color: labelColor })
+      return createdLabel.data.node_id
+    }
+  }
+
+  async function getLabelByName (context: Context, labelName: string) {
+    const { owner, repo } = context.repo()
+    context.log('Finding label')
+    const label = await context.github.graphql(getLabelByNameQuery, {
+      owner: owner,
+      repoName: repo,
+      labelName: labelName
     })
+    if (label && label.repository.label !== null) {
+      context.log('Found label')
+      return label.repository.label.id
+    }
+    return null
   }
 
   async function addLabelToIssue (context: Context, config: IssueCheckConfig) {
-    const issueLabel = context.issue({ labels: [config.labelName] })
-    await createLabelIfNotExists(context, config.labelName, config.labelColor)
-    return context.github.issues.addLabels(issueLabel)
+    const labelId = await createLabelIfNotExists(context, config.labelName, config.labelColor)
+    if (labelId !== null) {
+      return context.github.graphql(addLabelsToLabelable, {
+        labelIds: labelId,
+        labelableId: context.payload.issue.node_id
+      })
+    } else {
+      context.log('Could not add label to issue')
+      return null
+    }
   }
 
   async function removeLabelFromIssue (context: Context, config: IssueCheckConfig) {
-    const labelName = config.labelName
-    const labelRemoval = context.issue({ name: labelName })
-    return context.github.issues.removeLabel(labelRemoval)
+    const labelId = await getLabelByName(context, config.labelName)
+    if (labelId !== null) {
+      return context.github.graphql(removeLabelsFromLabelable, {
+        labelIds: labelId,
+        labelableId: context.payload.issue.node_id
+      })
+    } else {
+      context.log('Could not remove label from issue')
+      return null
+    }
   }
 
   async function addCommentToIssue (context: Context, config: IssueCheckConfig) {
-    const commentText = context.issue({ body: config.commentText })
-    return context.github.issues.createComment(commentText)
+    return context.github.graphql(addComment, {
+      subjectId: context.payload.issue.node_id,
+      body: config.commentText
+    })
   }
 }
+
+const addComment = `
+  mutation addComment($subjectId: ID!, $body: String!) {
+    addComment(input: {subjectId: $subjectId, body: $body}) {
+      clientMutationId
+    }
+  }
+`
+
+const addLabelsToLabelable = `
+  mutation addLabelsToLabelable($labelIds: ID!, $labelableId: ID!) {
+    addLabelsToLabelable(input: {labelIds: $labelIds, labelableId: $labelableId}) {
+      clientMutationId
+    }
+  }
+`
+
+const removeLabelsFromLabelable = `
+  mutation removeLabelsFromLabelable($labelIds: ID!, $labelableId: ID!) {
+    removeLabelsFromLabelable(input: {labelIds: [$labelIds], labelableId: $labelableId}) {
+      clientMutationId
+    }
+  }
+`
+
+const getLabelByNameQuery = `
+  query getLabelByName($owner: String!, $repoName: String!, $labelName: String!) {
+    repository(name: $repoName, owner: $owner) {
+      label(name: $labelName) {
+        id
+      }
+    }
+  }
+`
