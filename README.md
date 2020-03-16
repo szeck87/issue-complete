@@ -2,7 +2,7 @@
 
 > a GitHub App built with [probot](https://github.com/probot/probot) that ensures task lists in your issue template are completed when an issue is submitted. It also scans for keywords, such as "recreate", that may be in your template but missing when an issue is created
 
-[![Build Status](https://travis-ci.com/stevenzeck/issue-check.svg?branch=master)](https://travis-ci.com/stevenzeck/issue-check) [![Maintainability](https://api.codeclimate.com/v1/badges/aed99cd708cf7634a18e/maintainability)](https://codeclimate.com/github/stevenzeck/issue-check/maintainability)[![Test Coverage](https://api.codeclimate.com/v1/badges/aed99cd708cf7634a18e/test_coverage)](https://codeclimate.com/github/stevenzeck/issue-check/test_coverage)
+[![Build Status](https://travis-ci.com/stevenzeck/issue-check.svg?branch=master)](https://travis-ci.com/stevenzeck/issue-check) [![Maintainability](https://api.codeclimate.com/v1/badges/aed99cd708cf7634a18e/maintainability)](https://codeclimate.com/github/stevenzeck/issue-check/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/aed99cd708cf7634a18e/test_coverage)](https://codeclimate.com/github/stevenzeck/issue-check/test_coverage)
 
 ## What It Does
 
