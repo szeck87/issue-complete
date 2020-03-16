@@ -12,9 +12,7 @@
             "args": [
                 "--runInBand",
                 "--coverage",
-                "false",
-                "-t",
-                "issuecomplete.yml still picks up the configuration"
+                "false"
             ],
             "runtimeArgs": [
                 "--nolazy"
