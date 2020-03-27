@@ -49,28 +49,18 @@ export = (app: Application) => {
 
   async function addLabelToIssue (context: Context, config: IssueCheckConfig) {
     const labelId = await createLabelIfNotExists(context, config.labelName, config.labelColor)
-    if (labelId !== null) {
-      return context.github.graphql(addLabelsToLabelable, {
-        labelIds: labelId,
-        labelableId: context.payload.issue.node_id
-      })
-    } else {
-      context.log('Could not add label to issue')
-      return null
-    }
+    return context.github.graphql(addLabelsToLabelable, {
+      labelIds: labelId,
+      labelableId: context.payload.issue.node_id
+    })
   }
 
   async function removeLabelFromIssue (context: Context, config: IssueCheckConfig) {
     const labelId = await getLabelByName(context, config.labelName)
-    if (labelId !== null) {
-      return context.github.graphql(removeLabelsFromLabelable, {
-        labelIds: labelId,
-        labelableId: context.payload.issue.node_id
-      })
-    } else {
-      context.log('Could not remove label from issue')
-      return null
-    }
+    return context.github.graphql(removeLabelsFromLabelable, {
+      labelIds: labelId,
+      labelableId: context.payload.issue.node_id
+    })
   }
 
   async function addCommentToIssue (context: Context, config: IssueCheckConfig) {
