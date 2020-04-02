@@ -19,7 +19,7 @@
     "typescript": "3.8.3"
   },
   "devDependencies": {
-    "@types/jest": "25.1.4",
+    "@types/jest": "25.1.5",
     "@types/node": "13.9.8",
     "@typescript-eslint/parser": "2.26.0",
     "eslint-plugin-typescript": "0.14.0",
