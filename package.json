@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "probot": "9.11.5",
-    "typescript": "3.9.5"
+    "typescript": "3.9.6"
   },
   "devDependencies": {
     "@types/jest": "26.0.3",
