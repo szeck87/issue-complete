@@ -15,7 +15,7 @@
     "fix": "standard **/*.ts --fix"
   },
   "dependencies": {
-    "probot": "9.11.7",
+    "probot": "9.13.0",
     "typescript": "3.9.7"
   },
   "devDependencies": {
