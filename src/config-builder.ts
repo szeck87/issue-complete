@@ -1,6 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 import { Context } from 'probot'
 
+export interface IssueCheckConfig {
+  labelName: string;
+  labelColor: string;
+  commentText: string;
+}
+
 const defaultConfig: IssueCheckConfig = {
   labelName: 'waiting-for-user-information',
   labelColor: 'ffffff',
@@ -23,10 +29,4 @@ function buildConfig (context: Context, config: any) {
     config.labelName = defaultConfig.labelName
   }
   return config
-}
-
-export interface IssueCheckConfig {
-  labelName: string;
-  labelColor: string;
-  commentText: string;
 }
