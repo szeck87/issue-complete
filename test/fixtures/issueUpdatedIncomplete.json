@@ -14,6 +14,7 @@
         "default": false
       }
     ],
+    "number": 123,
     "body": "- [X] Task 1\r\n- [X] Task 2\r\n- [X] Task 3\r\ngist"
   },
   "repository": {

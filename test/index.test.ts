@@ -1,6 +1,9 @@
 // Requiring probot allows us to mock out a robot instance
-import { Application } from 'probot'
+import { Probot, ProbotOctokit } from 'probot'
 import issueCheck from '../src'
+import * as fs from 'fs'
+import * as path from 'path'
+import nock from 'nock'
 const issueOpenedWithUnchecked = require('./fixtures/issueOpenedWithUnchecked')
 const issueOpenedMissingKeywords = require('./fixtures/issueOpenedMissingKeywords')
 const issueReopenedIncomplete = require('./fixtures/issueReopenedIncomplete')
@@ -9,210 +12,251 @@ const issueUpdatedComplete = require('./fixtures/issueUpdatedComplete')
 const issueUpdatedIncomplete = require('./fixtures/issueUpdatedIncomplete')
 const issueOpenedNoBody = require('./fixtures/issueOpenedNoBody')
 
-let app: Application
-let github: any
+let app: Probot
+
+function loadConfig (filename: string): string {
+  return fs.readFileSync(path.join(__dirname, 'configs', filename + '.yml'), 'base64')
+}
 
 beforeEach(() => {
-  app = new Application()
+  app = new Probot({
+    id: 1,
+    githubToken: 'test',
+    Octokit: ProbotOctokit.defaults({
+      retry: { enabled: false },
+      throttle: { enabled: false }
+    })
+  })
   app.load(issueCheck)
-  github = {
-    repos: {
-      getContents: jest.fn().mockImplementation(() => Promise.resolve({
-        data: { content: Buffer.from('labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate').toString('base64') }
-      }))
-    },
-    issues: {
-      createLabel: jest.fn(),
-      removeLabel: jest.fn(),
-      createComment: jest.fn(),
-      addLabels: jest.fn(),
-      getLabel: jest.fn().mockImplementation(() => Promise.reject(new Error()))
-    }
-  }
-  app.auth = () => Promise.resolve(github)
 })
 
 describe('issues are missing required information', () => {
   test('unchecked boxes, adds a label and comment to a newly opened issue', async () => {
+    const mock = nock('https://api.github.com')
+      .get('/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml')
+      .reply(200, {
+        content: loadConfig('issuecomplete')
+      })
+
+      .post('/repos/stevenzeck/bot-testing/labels')
+      .reply(200)
+
+      .post('/repos/stevenzeck/bot-testing/issues/123/labels')
+      .reply(200)
+
+      .post('/repos/stevenzeck/bot-testing/issues/123/comments')
+      .reply(200)
+
     await app.receive({
       id: '123',
       name: 'issues',
       payload: issueOpenedWithUnchecked
     })
-    expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.addLabels).toHaveBeenCalled()
-    expect(github.issues.createComment).toHaveBeenCalled()
+    expect(mock.activeMocks()).toStrictEqual([])
   })
 
   test('missing keywords, adds a label and comment to a newly opened issue', async () => {
+    const mock = nock('https://api.github.com')
+      .get('/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml')
+      .reply(200, {
+        content: loadConfig('issuecomplete')
+      })
+
+      .post('/repos/stevenzeck/bot-testing/labels')
+      .reply(200)
+
+      .post('/repos/stevenzeck/bot-testing/issues/123/labels')
+      .reply(200)
+
+      .post('/repos/stevenzeck/bot-testing/issues/123/comments')
+      .reply(200)
     await app.receive({
       id: '123',
       name: 'issues',
       payload: issueOpenedMissingKeywords
     })
-    expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.addLabels).toHaveBeenCalled()
-    expect(github.issues.createComment).toHaveBeenCalled()
+    expect(mock.activeMocks()).toStrictEqual([])
   })
 
   test('unchecked boxes and missing keywords, adds a label and comment to a reopened issue', async () => {
+    const mock = nock('https://api.github.com')
+      .get('/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml')
+      .reply(200, {
+        content: loadConfig('issuecomplete')
+      })
+
+      .post('/repos/stevenzeck/bot-testing/labels')
+      .reply(200)
+
+      .post('/repos/stevenzeck/bot-testing/issues/123/labels')
+      .reply(200)
+
+      .post('/repos/stevenzeck/bot-testing/issues/123/comments')
+      .reply(200)
     await app.receive({
       id: '123',
       name: 'issues',
       payload: issueReopenedIncomplete
     })
-    expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.addLabels).toHaveBeenCalled()
-    expect(github.issues.createComment).toHaveBeenCalled()
+    expect(mock.activeMocks()).toStrictEqual([])
   })
 
   test('does not comment on updated issue with no checkboxes filled', async () => {
+    const mock = nock('https://api.github.com')
+      .get('/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml')
+      .reply(200, {
+        content: loadConfig('issuecomplete')
+      })
+
+      .post('/repos/stevenzeck/bot-testing/labels')
+      .reply(200)
+
+      .post('/repos/stevenzeck/bot-testing/issues/123/labels')
+      .reply(200)
     await app.receive({
       id: '123',
       name: 'issues',
       payload: issueUpdatedIncomplete
     })
-    expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.addLabels).toHaveBeenCalled()
-    expect(github.issues.createComment).not.toHaveBeenCalled()
+    expect(mock.activeMocks()).toStrictEqual([])
   })
 
   test('body is empty, adds a comment and labels', async () => {
+    const mock = nock('https://api.github.com')
+      .get('/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml')
+      .reply(200, {
+        content: loadConfig('issuecomplete')
+      })
+
+      .post('/repos/stevenzeck/bot-testing/labels')
+      .reply(200)
+
+      .post('/repos/stevenzeck/bot-testing/issues/123/labels')
+      .reply(200)
+
+      .post('/repos/stevenzeck/bot-testing/issues/123/comments')
+      .reply(200)
     await app.receive({
       id: '123',
       name: 'issues',
       payload: issueOpenedNoBody
     })
-    expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.addLabels).toHaveBeenCalled()
-    expect(github.issues.createComment).toHaveBeenCalled()
+    expect(mock.activeMocks()).toStrictEqual([])
   })
 })
 
 describe('issues have required information', () => {
   test('boxes checked and has keywords, does not add label or comment to opened issue', async () => {
+    const mock = nock('https://api.github.com')
+      .get('/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml')
+      .reply(200, {
+        content: loadConfig('issuecomplete')
+      })
+
+      .delete('/repos/stevenzeck/bot-testing/issues/123/labels/waiting-for-user-information')
+      .reply(200)
+
     await app.receive({
       id: '123',
       name: 'issues',
       payload: issueOpenedComplete
     })
-    expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.addLabels).not.toHaveBeenCalled()
-    expect(github.issues.createComment).not.toHaveBeenCalled()
+    expect(mock.activeMocks()).toStrictEqual([])
   })
 
   test('does not check checkboxes or keywords, does nothing', async () => {
-    github.repos.getContents = jest.fn().mockImplementation(() => Promise.resolve({
-      data: { content: Buffer.from('labelName: waiting-for-user-information\nlabelColor: f7c6c7\ncommentText: Thanks for opening an issue on bot-testing.').toString('base64') }
-    }))
+    const mock = nock('https://api.github.com')
+      .get('/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml')
+      .reply(200, {
+        content: loadConfig('issuecompletenocheckboxeskeywords')
+      })
+
+      .delete('/repos/stevenzeck/bot-testing/issues/123/labels/waiting-for-user-information')
+      .reply(200)
+
     await app.receive({
       id: '123',
       name: 'issues',
       payload: issueOpenedComplete
     })
-    expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.addLabels).not.toHaveBeenCalled()
-    expect(github.issues.createComment).not.toHaveBeenCalled()
+    expect(mock.activeMocks()).toStrictEqual([])
   })
 
   test('boxes checked and has keywords, removes label to updated issue', async () => {
+    const mock = nock('https://api.github.com')
+      .get('/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml')
+      .reply(200, {
+        content: loadConfig('issuecomplete')
+      })
+
+      .delete('/repos/stevenzeck/bot-testing/issues/123/labels/waiting-for-user-information')
+      .reply(200)
     await app.receive({
       id: '123',
       name: 'issues',
       payload: issueUpdatedComplete
     })
-    expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.removeLabel).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      name: 'waiting-for-user-information'
-    })
-    expect(github.issues.addLabels).not.toHaveBeenCalled()
-    expect(github.issues.createComment).not.toHaveBeenCalled()
+    expect(mock.activeMocks()).toStrictEqual([])
   })
 
   test('invalid color, uses default #ffffff', async () => {
-    github.repos.getContents = jest.fn().mockImplementation(() => Promise.resolve({
-      data: { content: Buffer.from('labelName: waiting-for-user-information\nlabelColor: hjuhgg\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate').toString('base64') }
-    }))
+    const mock = nock('https://api.github.com')
+      .get('/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml')
+      .reply(200, {
+        content: loadConfig('issuecompleteinvalidcolor')
+      })
+
+      .delete('/repos/stevenzeck/bot-testing/issues/123/labels/waiting-for-user-information')
+      .reply(200)
     await app.receive({
       id: '123',
       name: 'issues',
       payload: issueOpenedComplete
     })
-    expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.addLabels).not.toHaveBeenCalled()
-    expect(github.issues.createComment).not.toHaveBeenCalled()
+    expect(mock.activeMocks()).toStrictEqual([])
   })
 
   test('label text length too long, uses default', async () => {
-    github.repos.getContents = jest.fn().mockImplementation(() => Promise.resolve({
-      data: { content: Buffer.from('labelName: waiting-for-user-information-and-more-user-information\nlabelColor: ffffff\ncommentText: Thanks for opening an issue on bot-testing.\ncheckCheckboxes: true\nkeywords:\n  - gist\n  - recreate').toString('base64') }
-    }))
+    const mock = nock('https://api.github.com')
+      .get('/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml')
+      .reply(200, {
+        content: loadConfig('issuecompletelabeltextlong')
+      })
+
+      .delete('/repos/stevenzeck/bot-testing/issues/123/labels/waiting-for-user-information')
+      .reply(200)
     await app.receive({
       id: '123',
       name: 'issues',
       payload: issueOpenedComplete
     })
-    expect(github.repos.getContents).toHaveBeenCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.addLabels).not.toHaveBeenCalled()
-    expect(github.issues.createComment).not.toHaveBeenCalled()
+    expect(mock.activeMocks()).toStrictEqual([])
   })
-})
 
-describe('configuration file name', () => {
-  test('issuecomplete.yml still picks up the configuration', async () => {
-    await app.receive({
-      id: '123',
-      name: 'issues',
-      payload: issueOpenedWithUnchecked
+  describe('configuration file name', () => {
+    test('issuecomplete.yml still picks up the configuration', async () => {
+      const mock = nock('https://api.github.com')
+        .get(
+          '/repos/stevenzeck/bot-testing/contents/.github%2Fissuecomplete.yml'
+        )
+        .reply(200, {
+          content: loadConfig('issuecomplete')
+        })
+
+        .post('/repos/stevenzeck/bot-testing/labels')
+        .reply(200)
+
+        .post('/repos/stevenzeck/bot-testing/issues/123/labels')
+        .reply(200)
+
+        .post('/repos/stevenzeck/bot-testing/issues/123/comments')
+        .reply(200)
+      await app.receive({
+        id: '123',
+        name: 'issues',
+        payload: issueOpenedWithUnchecked
+      })
+      expect(mock.activeMocks()).toStrictEqual([])
     })
-    expect(github.repos.getContents).toHaveBeenLastCalledWith({
-      owner: 'stevenzeck',
-      repo: 'bot-testing',
-      path: '.github/issuecomplete.yml'
-    })
-    expect(github.issues.addLabels).toHaveBeenCalled()
-    expect(github.issues.createComment).toHaveBeenCalled()
   })
 })
