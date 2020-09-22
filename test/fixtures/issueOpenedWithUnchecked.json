@@ -5,6 +5,7 @@
     "user": {
       "login": "stevenzeck"
     },
+    "number": 123,
     "body": "- [ ] Task 1\r\n- [ ] Task 2\r\n- [ ] Task 3\r\ngist\nrecreate"
   },
   "repository": {

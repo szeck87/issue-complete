@@ -4,7 +4,8 @@
       "title": "Test With Checkboxes Filled",
       "user": {
         "login": "stevenzeck"
-      }
+      },
+      "number": 123
     },
     "repository": {
       "name": "bot-testing",
