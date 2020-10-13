@@ -24,7 +24,7 @@
     "@typescript-eslint/parser": "4.4.1",
     "eslint-plugin-typescript": "0.14.0",
     "jest": "26.5.3",
-    "nodemon": "2.0.4",
+    "nodemon": "2.0.5",
     "smee-client": "1.2.2",
     "standard": "14.3.4",
     "ts-jest": "26.4.1"
